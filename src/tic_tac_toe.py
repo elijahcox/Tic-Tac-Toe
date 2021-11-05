@@ -1,18 +1,25 @@
 
 def check_for_two(move_list,move): #returns array of indices with first 2 in a row found
-    #corners: [0-1,0-3] [2-1,2-5] [6-7,6-3] [8-7,8-5] 
+    #need to find in row with 2 of move and 1 blank
     
-    #middle: [4-1,4-3,4-5,4-7]
-    if move_list[4] == move:
-        for i in range(1,8,2):
-            if move_list[i] == move:
-                return [4,i]
-    return -1
+    for i in range(0,7,3): #rows : [0-1-2], [3-4-5], [6-7-8]
+        st = "".join(move_list[i:i+3])
+        if st.count(move) == 2 and st.count(" ") == 1:
+            #2 in row found
+            pass
+
+    for i in range(0,3,1): #cols : [0-3-6], [1,4,7], [2,5,8]
+        st = "".join(move_list[i]+move_list[i+3]+move_list[i+6])
+        if st.count(move) == 2 and st.count(" ") == 1:
+            #2 in row found
+            pass
+    
 
 
 def get_cpu_move(move_list,cpu_move,opponent_move):
     #1.  Win: If you have two in a row, play the third to get three in a row.
     two_in_row = check_for_two(move_list,cpu_move)
+
 
     
 
