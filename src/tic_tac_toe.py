@@ -1,29 +1,58 @@
-#pass
+
+def get_cpu_move(move_list,cpu_move):
+    #1.  Win: If you have two in a row, play the third to get three in a row.
+    #2. Block: If the opponent has two in a row, play the third to block them.
+    #3. Fork: Create an opportunity where you can win in two ways.
+    #4. Block Opponent's Fork:
+    #4.1.  Create two in a row to force the opponent into defending, as long as it doesn't result in them creating a fork or winning. 
+    # For example, if "X" has a corner, "O" has the center, and "X" has the opposite corner as well, "O" must not play a corner in order to win. 
+    # (Playing a corner in this scenario creates a fork for "X" to win.)
+    #4.2. If there is a configuration where the opponent can fork, block that fork.
+    
+    #5. Center: Play the center.
+    if move_list[5] == ' ':
+        move_list[5] = 
+    #6. Opposite Corner: If the opponent is in the corner, play the opposite corner.
+    #7. Empty Corner: Play an empty corner.
+    #8. Empty Side: Play an empty side.
+    return move_list
+
 
 def print_board(move_list = [1,2,3,4,5,6,7,8,9]):
-    pass
+    line = ('\n---|---|---')
+    print('\n')
+    for i in range(1,10):
+        print(' '+str(move_list[i-1])+ ' ',end="")
+        if i % 3 != 0:
+            print('|',end="")
+        else:
+            if i != 9:
+                print(line)
+    print('\n')
 
 def usage():
     print("Welcome to impossible Tic Tac Toe!\nThe board is laid out as follows:")
     print_board()
     print("To play, simply enter 1-9 corresponding to the cell that you want to play on.")
 
-move_arr = [0]*9
-move_order = ""
+move_arr = [' ']*9
+player_move = ""
+cpu_move = 'O'
 cur_move = -1
 valid_move = False
 usage()
 
-while move_order.upper() != 'X' and move_order.upper() != 'O':
-    move_order = str(input("Enter X to play first, O to play second. Enter Q to quit. Choice: "))
-    if move_order.upper() == 'Q':
+while player_move.upper() != 'X' and player_move.upper() != 'O':
+    player_move = str(input("Enter X to play first, O to play second. Enter Q to quit. Choice: "))
+    if player_move.upper() == 'Q':
         exit()
 
-#if move order is O, make initial computer move
-#else get user input
+if player_move == 'O':
+    cpu_move = 'X'
+    get_cpu_move(move_arr,cpu_move) #call cpu for first move, edits move_arr
+    print_board()
 
-#move input logic
-while True:
+while True: #while game != done
     while not valid_move:
         try:
             cur_move = str(input("Enter a move[1-9] or Q to quit: "))
@@ -32,8 +61,9 @@ while True:
             else:
                 cur_move = int(cur_move)
             if cur_move in range(1,10):
-                if move_arr[cur_move-1] == 0:
+                if move_arr[cur_move-1] == ' ':
                     valid_move = True
+                    move_arr[cur_move-1] = player_move
                 else:
                    print("This spot has already been played on.")
             else:
@@ -41,3 +71,5 @@ while True:
         except ValueError:
             print("Please enter a number within [1-9].")
     valid_move = False
+    print_board(move_arr)
+    #make cpu move
