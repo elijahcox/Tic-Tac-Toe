@@ -1,8 +1,27 @@
 
+def check_for_two(move_list,move): #returns array of indices with first 2 in a row found
+    #corners: [0-1,0-3] [2-1,2-5] [6-7,6-3] [8-7,8-5] 
+    
+    #middle: [4-1,4-3,4-5,4-7]
+    if move_list[4] == move:
+        for i in range(1,8,2):
+            if move_list[i] == move:
+                return [4,i]
+    return -1
+
+
 def get_cpu_move(move_list,cpu_move,opponent_move):
     #1.  Win: If you have two in a row, play the third to get three in a row.
+    two_in_row = check_for_two(move_list,cpu_move)
+
+    
+
     #2. Block: If the opponent has two in a row, play the third to block them.
+    #check corners and middle
+    two_in_row = check_for_two(move_list,opponent_move)
+
     #3. Fork: Create an opportunity where you can win in two ways.
+
     #4. Block Opponent's Fork:
     #4.1.  Create two in a row to force the opponent into defending, as long as it doesn't result in them creating a fork or winning. 
     # For example, if "X" has a corner, "O" has the center, and "X" has the opposite corner as well, "O" must not play a corner in order to win. 
