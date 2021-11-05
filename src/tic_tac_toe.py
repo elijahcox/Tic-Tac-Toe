@@ -9,6 +9,7 @@ class tic_tac_toe:
                 exit()
         self.cpu_move = 'O' if self.player_move == 'X'  else 'X'
 
+
     def print_board(self,move_list = [1,2,3,4,5,6,7,8,9]):
         line = ('\n---|---|---')
         print('\n')
@@ -23,7 +24,7 @@ class tic_tac_toe:
 
     def usage(self):
         print("Welcome to impossible Tic Tac Toe!\nThe board is laid out as follows:")
-        self.print_board()
+        self.print_board(self.move_arr)
         print("To play, simply enter 1-9 corresponding to the cell that you want to play on.")
 
     def check_for_two(self,to_win = True): #returns array of indices with first 2 in a row found
@@ -42,16 +43,22 @@ class tic_tac_toe:
                 return True
         return False
 
+    def check_fork(self):
+        pass
+        
+
     def get_cpu_move(self):
         #1.  Win: If you have two in a row, play the third to get three in a row.
-        if self.check_for_two() == True:
+        if self.check_for_two():
             #process win statement
             #return
             pass
 
         #2. Block: If the opponent has two in a row, play the third to block them.
         #check corners and middle
-        two_in_row = self.check_for_two(False)
+        if self.check_for_two(False):
+            #return
+            pass
 
         #3. Fork: Create an opportunity where you can win in two ways.
 
@@ -96,8 +103,7 @@ class tic_tac_toe:
                 self.move_list[i] = self.cpu_move
 
     def get_user_move(self):
-        valid_move = False
-        while not valid_move:
+        while True:
             try:
                 cur_move = str(input("Enter a move[1-9] or Q to quit: "))
                 if cur_move.upper() == 'Q':
@@ -114,3 +120,4 @@ class tic_tac_toe:
                     raise ValueError
             except ValueError:
                 print("Please enter a number within [1-9].")
+        self.print_board()
