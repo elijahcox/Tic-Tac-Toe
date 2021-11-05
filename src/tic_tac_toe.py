@@ -2,6 +2,7 @@
 
 def print_board(move_list = [1,2,3,4,5,6,7,8,9]):
     line = ('\n---|---|---')
+    print('\n')
     for i in range(1,10):
         print(' '+str(move_list[i-1])+ ' ',end="")
         if i % 3 != 0:
@@ -9,12 +10,12 @@ def print_board(move_list = [1,2,3,4,5,6,7,8,9]):
         else:
             if i != 9:
                 print(line)
-        
+    print('\n')
 
 def usage():
-    print("Welcome to impossible Tic Tac Toe!\nThe board is laid out as follows:\n")
+    print("Welcome to impossible Tic Tac Toe!\nThe board is laid out as follows:")
     print_board()
-    print("\n\nTo play, simply enter 1-9 corresponding to the cell that you want to play on.")
+    print("To play, simply enter 1-9 corresponding to the cell that you want to play on.")
 
 move_arr = [' ']*9
 player_move = ""
@@ -32,10 +33,11 @@ if player_move == 'O':
     CPU_MOVE = 'X'
     #call cpu
 
+print_board(['X','O','X','O','X','O','X','O','X'])
 #if move order is O, make initial computer move
 #else get user input
 
-#move input logic
+#move input logicx
 while True: #while game != done
     while not valid_move:
         try:
@@ -47,6 +49,7 @@ while True: #while game != done
             if cur_move in range(1,10):
                 if move_arr[cur_move-1] == ' ':
                     valid_move = True
+                    move_arr[cur_move-1] = player_move
                 else:
                    print("This spot has already been played on.")
             else:
@@ -54,4 +57,5 @@ while True: #while game != done
         except ValueError:
             print("Please enter a number within [1-9].")
     valid_move = False
+    print_board(move_arr)
     #make cpu move
