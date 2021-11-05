@@ -1,5 +1,5 @@
 
-def get_cpu_move(move_list,cpu_move):
+def get_cpu_move(move_list,cpu_move,opponent_move):
     #1.  Win: If you have two in a row, play the third to get three in a row.
     #2. Block: If the opponent has two in a row, play the third to block them.
     #3. Fork: Create an opportunity where you can win in two ways.
@@ -10,13 +10,44 @@ def get_cpu_move(move_list,cpu_move):
     #4.2. If there is a configuration where the opponent can fork, block that fork.
     
     #5. Center: Play the center.
-    if move_list[5] == ' ':
-        move_list[5] = 
+    if move_list[4] == ' ':
+        move_list[4] = cpu_move
+        return move_list
+    
     #6. Opposite Corner: If the opponent is in the corner, play the opposite corner.
+    corner_1 = str(move_list[0]) + str(move_list[8])
+    corner_2 = str(move_list[2]) + str(move_list[6])
+    empty_1 = " " + opponent_move
+    empty_2 = opponent_move + " "
+    if corner_1 == empty_1 or corner_1 == empty_2:
+        if move_list[0] == " ":
+            move_list[0] = cpu_move
+        else:
+            move_list[8] = cpu_move
+        return move_list
+    elif corner_2 == empty_1 or corner_2 == empty_2:
+        if move_list[2] == " ":
+            move_list[2] = cpu_move
+        else:
+            move_list[6] = cpu_move
+        return move_list
+    
     #7. Empty Corner: Play an empty corner.
-    #8. Empty Side: Play an empty side.
-    return move_list
+    for i in range(0,9,2):
+        if move_list[i] == " ":
+            move_list[i] = cpu_move
+            return move_list
 
+    #8. Empty Side: Play an empty side.
+    for i in range(0,7,6): #sides: 0,1,2 and  6,7,8
+        if "".join(move_list[i:i+3]) == "   ":
+            move_list[i] = cpu_move
+            return move_list
+    
+    for i in range(0,3,2): #sides 0,3,6 and 2,5,8
+        if move_list[i]+move_list[i+3]+move_list[i+6] == "   ":
+            move_list[i] = cpu_move
+            return move_list
 
 def print_board(move_list = [1,2,3,4,5,6,7,8,9]):
     line = ('\n---|---|---')
@@ -49,7 +80,7 @@ while player_move.upper() != 'X' and player_move.upper() != 'O':
 
 if player_move == 'O':
     cpu_move = 'X'
-    get_cpu_move(move_arr,cpu_move) #call cpu for first move, edits move_arr
+    move_arr = get_cpu_move(move_arr,cpu_move,player_move) #call cpu for first move, edits move_arr
     print_board()
 
 while True: #while game != done
