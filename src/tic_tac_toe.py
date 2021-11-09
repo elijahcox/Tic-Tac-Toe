@@ -8,6 +8,7 @@ class tic_tac_toe:
             if self.player_move == 'Q':
                 exit()
         self.cpu_move = 'O' if self.player_move == 'X'  else 'X'
+        self.game_handler()
 
 
     def print_board(self,move_list = [1,2,3,4,5,6,7,8,9]):
@@ -69,9 +70,9 @@ class tic_tac_toe:
         move_made = False
         #1.  Win: If you have two in a row, play the third to get three in a row.
         if self.check_for_two(self.cpu_move):
-            #process win statement
-            #return
-            pass
+            print("CPU wins! Better luck next time!")
+            self.print_board(self.move_arr)
+            exit()
 
         #2. Block: If the opponent has two in a row, play the third to block them.
         if self.check_for_two(self.player_move):
@@ -138,7 +139,6 @@ class tic_tac_toe:
                 if cur_move in range(1,10):
                     if self.move_arr[cur_move-1] == ' ':
                         self.move_arr[cur_move-1] = self.player_move
-                        self.print_board(self.move_arr)
                         return
                     else:
                        print("This spot has already been played on.")
@@ -146,3 +146,27 @@ class tic_tac_toe:
                     raise ValueError
             except ValueError:
                 print("Please enter a number within [1-9].")
+
+    def game_handler(self):
+        cpu_turn = True
+        if self.cpu_move == 'O':
+            cpu_turn = False
+        
+        while ' ' in self.move_arr:
+            if cpu_turn:
+                self.get_cpu_move()
+                self.print_board(self.move_arr)
+                cpu_turn = False
+            else:
+                self.get_user_move()
+                self.print_board(self.move_arr)
+                cpu_turn = True
+        print("Tie game! Better luck next time!")
+        self.print_board(self.move_arr)
+        exit()
+
+def main():
+    game = tic_tac_toe()
+
+if __name__ == "__main__":
+    main()
