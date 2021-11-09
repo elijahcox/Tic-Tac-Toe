@@ -27,40 +27,65 @@ class tic_tac_toe:
         self.print_board(self.move_arr)
         print("To play, simply enter 1-9 corresponding to the cell that you want to play on.")
 
-    def check_for_two(self,to_win = True): #returns array of indices with first 2 in a row found
-        to_find = self.cpu_move if to_win else self.player_move
-
+    def check_for_two(self,to_find, fork_check = False):
+        count = 0
         for i in range(0,7,3): #rows : [0-1-2], [3-4-5], [6-7-8]
-            st = "".join(self.move_list[i:i+3])
+            st = "".join(self.move_arr[i:i+3])
             if st.count(to_find) == 2 and st.count(" ") == 1:
-                self.move_arr[st.find(' ')] = self.cpu_move
-                return True
+                if fork_check:
+                    count += 1
+                else:
+                    self.move_arr[st.find(' ')] = self.cpu_move
+                    return True
 
         for i in range(0,3,1): #cols : [0-3-6], [1,4,7], [2,5,8]
-            st = "".join(self.move_list[i]+self.move_list[i+3]+self.move_list[i+6])
+            st = "".join(self.move_arr[i]+self.move_arr[i+3]+self.move_arr[i+6])
             if st.count(to_find) == 2 and st.count(" ") == 1:
-                self.move_arr[st.find(' ')] = self.cpu_move
-                return True
-        return False
+                if fork_check:
+                    count += 1
+                else:
+                    self.move_arr[st.find(' ')] = self.cpu_move
+                    return True
+        if fork_check:
+            return count >= 2
+        else:
+            return False
 
-    def check_fork(self):
-        pass
+    def check_fork(self,move):
+        #temporarily put move in middle (cpu or opponents if blocking)
+        #if it forms 2 in row twice, end up placing it there (if its an opponent fork, remove tmp opponent and place cpu move)
+        self.move_arr[4] = move
+        if self.check_for_two(move,True) == True:
+            if move != self.cpu_move:
+                self.move_arr = self.cpu_move #remove opponent move and place cpu move to block fork 
+            return True
+        else:
+            self.move_arr[4] = ' '
+            return False
+
         
 
     def get_cpu_move(self):
+        move_made = False
         #1.  Win: If you have two in a row, play the third to get three in a row.
-        if self.check_for_two():
+        if self.check_for_two(self.cpu_move):
             #process win statement
             #return
             pass
 
         #2. Block: If the opponent has two in a row, play the third to block them.
-        #check corners and middle
-        if self.check_for_two(False):
-            #return
+        if self.check_for_two(self.player_move):
+            move_made = True
             pass
 
         #3. Fork: Create an opportunity where you can win in two ways.
+        #considering that cpu and user 2 in rows aren't present, a fork can only be created by placing a move in the middle
+        if self.move_arr[4] == ' ':
+            if self.check_fork(self.cpu_move):
+                #cpu fork placed
+                pass
+
+
 
         #4. Block Opponent's Fork:
         #4.1.  Create two in a row to force the opponent into defending, as long as it doesn't result in them creating a fork or winning. 
@@ -69,38 +94,38 @@ class tic_tac_toe:
         #4.2. If there is a configuration where the opponent can fork, block that fork.
 
         #5. Center: Play the center.
-        if self.move_list[4] == ' ':
-            self.move_list[4] = self.cpu_move
+        if self.move_arr[4] == ' ':
+            self.move_arr[4] = self.cpu_move
 
         #6. Opposite Corner: If the opponent is in the corner, play the opposite corner.
-        corner_1 = str(self.move_list[0]) + str(self.move_list[8])
-        corner_2 = str(self.move_list[2]) + str(self.move_list[6])
+        corner_1 = str(self.move_arr[0]) + str(self.move_arr[8])
+        corner_2 = str(self.move_arr[2]) + str(self.move_arr[6])
         empty_1 = " " + self.opponent_move
         empty_2 = self.opponent_move + " "
         if corner_1 == empty_1 or corner_1 == empty_2:
-            if self.move_list[0] == " ":
-                self.move_list[0] = self.cpu_move
+            if self.move_arr[0] == " ":
+                self.move_arr[0] = self.cpu_move
             else:
-                self.move_list[8] = self.cpu_move
+                self.move_arr[8] = self.cpu_move
         elif corner_2 == empty_1 or corner_2 == empty_2:
-            if self.move_list[2] == " ":
-                self.move_list[2] = self.cpu_move
+            if self.move_arr[2] == " ":
+                self.move_arr[2] = self.cpu_move
             else:
-                self.move_list[6] = self.cpu_move
+                self.move_arr[6] = self.cpu_move
 
         #7. Empty Corner: Play an empty corner.
         for i in range(0,9,2):
-            if self.move_list[i] == " ":
-                self.move_list[i] = self.cpu_move
+            if self.move_arr[i] == " ":
+                self.move_arr[i] = self.cpu_move
 
         #8. Empty Side: Play an empty side.
         for i in range(0,7,6): #sides: 0,1,2 and  6,7,8
-            if "".join(self.move_list[i:i+3]) == "   ":
-                self.move_list[i] = self.cpu_move
+            if "".join(self.move_arr[i:i+3]) == "   ":
+                self.move_arr[i] = self.cpu_move
 
         for i in range(0,3,2): #sides 0,3,6 and 2,5,8
-            if self.move_list[i]+self.move_list[i+3]+self.move_list[i+6] == "   ":
-                self.move_list[i] = self.cpu_move
+            if self.move_arr[i]+self.move_arr[i+3]+self.move_arr[i+6] == "   ":
+                self.move_arr[i] = self.cpu_move
 
     def get_user_move(self):
         while True:
@@ -113,6 +138,7 @@ class tic_tac_toe:
                 if cur_move in range(1,10):
                     if self.move_arr[cur_move-1] == ' ':
                         self.move_arr[cur_move-1] = self.player_move
+                        self.print_board(self.move_arr)
                         return
                     else:
                        print("This spot has already been played on.")
@@ -120,4 +146,3 @@ class tic_tac_toe:
                     raise ValueError
             except ValueError:
                 print("Please enter a number within [1-9].")
-        self.print_board()
