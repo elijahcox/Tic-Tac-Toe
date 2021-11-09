@@ -80,6 +80,15 @@ class tic_tac_toe:
             self.move_arr[4] = ' '
             return False
 
+    def check_corner(self): # [0,8] or [2,6]
+        corner_list = [[0,8],[2,6]]
+        for corner in corner_list:
+            st = str(self.move_arr[corner[0]]) + str(self.move_arr[corner[1]])
+            if st.count(' ') == st.count(self.player_move):
+                self.move_arr[corner[st.index(' ')]] = self.cpu_move
+                return True
+        return False
+
     def get_cpu_move(self):
         if self.check_for_two(self.cpu_move): #1.  Win: If you have two in a row, play the third to get three in a row.
             print("CPU wins! Better luck next time!")
@@ -103,22 +112,8 @@ class tic_tac_toe:
             return
 
         #6. Opposite Corner: If the opponent is in the corner, play the opposite corner.
-        corner_1 = str(self.move_arr[0]) + str(self.move_arr[8])
-        corner_2 = str(self.move_arr[2]) + str(self.move_arr[6])
-        empty_1 = " " + self.player_move
-        empty_2 = self.player_move + " "
-        if corner_1 == empty_1 or corner_1 == empty_2:
-            if self.move_arr[0] == " ":
-                self.move_arr[0] = self.cpu_move
-            else:
-                self.move_arr[8] = self.cpu_move
-            return
-        elif corner_2 == empty_1 or corner_2 == empty_2:
-            if self.move_arr[2] == " ":
-                self.move_arr[2] = self.cpu_move
-            else:
-                self.move_arr[6] = self.cpu_move
-            return
+        if self.check_corner():
+            return True
 
         #7. Empty Corner: Play an empty corner.
         for i in range(0,9,2):
@@ -171,12 +166,8 @@ class tic_tac_toe:
                 print("Your Move: ")
                 self.print_board()
                 cpu_turn = True
-        print("Tie game! Better luck next time!")
+        print("Tie game!")
         self.print_board()
         exit()
-        
-def main():
-    game = tic_tac_toe()
 
-if __name__ == "__main__":
-    main()
+game = tic_tac_toe()
