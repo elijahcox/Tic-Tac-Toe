@@ -45,8 +45,27 @@ class tic_tac_toe:
                 if fork_check:
                     count += 1
                 else:
-                    self.move_arr[st.find(' ')] = self.cpu_move
+                    self.move_arr[st.find(' ')*3 + i] = self.cpu_move
                     return True
+
+        for i in range(0,3,2):
+            if i == 0:
+                st = "".join(self.move_arr[i]+self.move_arr[i+4]+self.move_arr[i+8])
+                if st.count(to_find) == 2 and st.count(" ") == 1:
+                    if fork_check:
+                        count += 1
+                    else:
+                        self.move_arr[st.find(' ')*4 + i] = self.cpu_move
+                        return True       
+            else:
+                st = "".join(self.move_arr[i]+self.move_arr[i+2]+self.move_arr[i+4])
+                if st.count(to_find) == 2 and st.count(" ") == 1:
+                    if fork_check:
+                        count += 1
+                    else:
+                        self.move_arr[st.find(' ')*2 + i] = self.cpu_move
+                        return True             
+        
         if fork_check:
             return count >= 2
         else:
