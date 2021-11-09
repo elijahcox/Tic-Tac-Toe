@@ -25,7 +25,7 @@ class tic_tac_toe:
 
     def usage(self):
         print("Welcome to impossible Tic Tac Toe!\nThe board is laid out as follows:")
-        self.print_board(self.move_arr)
+        self.print_board()
         print("To play, simply enter 1-9 corresponding to the cell that you want to play on.")
 
     def check_for_two(self,to_find, fork_check = False):
@@ -36,7 +36,7 @@ class tic_tac_toe:
                 if fork_check:
                     count += 1
                 else:
-                    self.move_arr[st.find(' ')] = self.cpu_move
+                    self.move_arr[st.find(' ') + i] = self.cpu_move
                     return True
 
         for i in range(0,3,1): #cols : [0-3-6], [1,4,7], [2,5,8]
@@ -104,8 +104,6 @@ class tic_tac_toe:
                 #cpu fork placed
                 return
 
-
-
         #4. Block Opponent's Fork:
         #4.1.  Create two in a row to force the opponent into defending, as long as it doesn't result in them creating a fork or winning. 
         # For example, if "X" has a corner, "O" has the center, and "X" has the opposite corner as well, "O" must not play a corner in order to win. 
@@ -151,6 +149,9 @@ class tic_tac_toe:
             if self.move_arr[i]+self.move_arr[i+3]+self.move_arr[i+6] == "   ":
                 self.move_arr[i] = self.cpu_move
                 return
+        
+        #9. play somewhere random for now
+        self.move_arr[self.move_arr.index(' ')] = self.cpu_move
 
     def get_user_move(self):
         while True:
