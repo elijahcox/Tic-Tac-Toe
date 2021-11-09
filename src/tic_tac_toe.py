@@ -1,8 +1,8 @@
 class tic_tac_toe:
+    move_arr = [' ']*9
     def __init__(self):
         self.usage()
         self.player_move = ''
-        self.move_arr = [' ']*9
         while self.player_move != 'X' and self.player_move != 'O':
             self.player_move = str(input("Enter X to play first, O to play second. Enter Q to quit. Choice: ")).upper()
             if self.player_move == 'Q':
@@ -76,15 +76,14 @@ class tic_tac_toe:
 
         #2. Block: If the opponent has two in a row, play the third to block them.
         if self.check_for_two(self.player_move):
-            move_made = True
-            pass
+            return
 
         #3. Fork: Create an opportunity where you can win in two ways.
         #considering that cpu and user 2 in rows aren't present, a fork can only be created by placing a move in the middle
         if self.move_arr[4] == ' ':
             if self.check_fork(self.cpu_move):
                 #cpu fork placed
-                pass
+                return
 
 
 
@@ -97,36 +96,42 @@ class tic_tac_toe:
         #5. Center: Play the center.
         if self.move_arr[4] == ' ':
             self.move_arr[4] = self.cpu_move
+            return
 
         #6. Opposite Corner: If the opponent is in the corner, play the opposite corner.
         corner_1 = str(self.move_arr[0]) + str(self.move_arr[8])
         corner_2 = str(self.move_arr[2]) + str(self.move_arr[6])
-        empty_1 = " " + self.opponent_move
-        empty_2 = self.opponent_move + " "
+        empty_1 = " " + self.player_move
+        empty_2 = self.player_move + " "
         if corner_1 == empty_1 or corner_1 == empty_2:
             if self.move_arr[0] == " ":
                 self.move_arr[0] = self.cpu_move
             else:
                 self.move_arr[8] = self.cpu_move
+            return
         elif corner_2 == empty_1 or corner_2 == empty_2:
             if self.move_arr[2] == " ":
                 self.move_arr[2] = self.cpu_move
             else:
                 self.move_arr[6] = self.cpu_move
+            return
 
         #7. Empty Corner: Play an empty corner.
         for i in range(0,9,2):
             if self.move_arr[i] == " ":
                 self.move_arr[i] = self.cpu_move
+                return
 
         #8. Empty Side: Play an empty side.
         for i in range(0,7,6): #sides: 0,1,2 and  6,7,8
             if "".join(self.move_arr[i:i+3]) == "   ":
                 self.move_arr[i] = self.cpu_move
+                return
 
         for i in range(0,3,2): #sides 0,3,6 and 2,5,8
             if self.move_arr[i]+self.move_arr[i+3]+self.move_arr[i+6] == "   ":
                 self.move_arr[i] = self.cpu_move
+                return
 
     def get_user_move(self):
         while True:
@@ -155,10 +160,12 @@ class tic_tac_toe:
         while ' ' in self.move_arr:
             if cpu_turn:
                 self.get_cpu_move()
+                print("CPU Move: ")
                 self.print_board(self.move_arr)
                 cpu_turn = False
             else:
                 self.get_user_move()
+                print("Your Move: ")
                 self.print_board(self.move_arr)
                 cpu_turn = True
         print("Tie game! Better luck next time!")
