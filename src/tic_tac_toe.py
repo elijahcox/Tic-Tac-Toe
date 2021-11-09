@@ -39,7 +39,7 @@ class tic_tac_toe:
                     return True
 
         for i in range(0,3,1): #cols : [0-3-6], [1,4,7], [2,5,8]
-            st = "".join(self.move_arr[i]+self.move_arr[i+3]+self.move_arr[i+6])
+            st = "".join(self.move_arr[i:9:3])
             if st.count(to_find) == 2 and st.count(" ") == 1:
                 if fork_check:
                     count += 1
@@ -98,17 +98,13 @@ class tic_tac_toe:
         if self.check_for_two(self.player_move): #2. Block: If the opponent has two in a row, play the third to block them.
             return
    
-        if self.move_arr[4] == ' ': #3. Fork: Create an opportunity where you can win in two ways.
-            if self.check_fork(self.cpu_move):
-                #cpu fork placed
-                return
-        
-        if self.move_arr[4] == ' ': #4. Block Opponent's Fork:
-            if self.check_fork(self.player_move):
-                return
-
-        if self.move_arr[4] == ' ': #5. Center: Play the center.
-            self.move_arr[4] = self.cpu_move
+        if self.move_arr[4] == ' ':
+            if self.check_fork(self.cpu_move): #3. Fork: Create an opportunity where you can win in two ways.
+                pass
+            elif self.check_fork(self.player_move): #4. Block Opponent's Fork:
+                pass
+            else:
+                self.move_arr[4] = self.cpu_move #5. Center: Play the center.
             return
 
         #6. Opposite Corner: If the opponent is in the corner, play the opposite corner.
