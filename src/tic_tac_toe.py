@@ -8,11 +8,10 @@ class tic_tac_toe:
             if self.player_move == 'Q':
                 exit()
         self.cpu_move = 'O' if self.player_move == 'X'  else 'X'
-        self.game_handler()
+        self.game_handler(self.cpu_move == 'X')
 
-
-    def print_board(self,move_list = [1,2,3,4,5,6,7,8,9]):
-        line = ('\n---|---|---')
+    def print_board(self,move_list = None):
+        move_list = self.move_arr if move_list == None else move_list
         print('\n')
         for i in range(1,10):
             print(' '+str(move_list[i-1])+ ' ',end="")
@@ -20,12 +19,12 @@ class tic_tac_toe:
                 print('|',end="")
             else:
                 if i != 9:
-                    print(line)
+                    print('\n---|---|---')
         print('\n')
 
     def usage(self):
         print("Welcome to impossible Tic Tac Toe!\nThe board is laid out as follows:")
-        self.print_board()
+        self.print_board([1,2,3,4,5,6,7,8,9])
         print("To play, simply enter 1-9 corresponding to the cell that you want to play on.")
 
     def check_for_two(self,to_find, fork_check = False):
@@ -72,46 +71,34 @@ class tic_tac_toe:
             return False
 
     def check_fork(self,move):
-        #temporarily put move in middle (cpu or opponents if blocking)
-        #if it forms 2 in row twice, end up placing it there (if its an opponent fork, remove tmp opponent and place cpu move)
-        self.move_arr[4] = move
+        self.move_arr[4] = move #only middle can be used for fork under cpu strat
         if self.check_for_two(move,True) == True:
             if move != self.cpu_move:
-                self.move_arr = self.cpu_move #remove opponent move and place cpu move to block fork 
+                self.move_arr[4] = self.cpu_move #remove opponent move and place cpu move to block fork 
             return True
         else:
             self.move_arr[4] = ' '
             return False
 
-        
-
     def get_cpu_move(self):
-        move_made = False
-        #1.  Win: If you have two in a row, play the third to get three in a row.
-        if self.check_for_two(self.cpu_move):
+        if self.check_for_two(self.cpu_move): #1.  Win: If you have two in a row, play the third to get three in a row.
             print("CPU wins! Better luck next time!")
-            self.print_board(self.move_arr)
+            self.print_board()
             exit()
 
-        #2. Block: If the opponent has two in a row, play the third to block them.
-        if self.check_for_two(self.player_move):
+        if self.check_for_two(self.player_move): #2. Block: If the opponent has two in a row, play the third to block them.
             return
-
-        #3. Fork: Create an opportunity where you can win in two ways.
-        #considering that cpu and user 2 in rows aren't present, a fork can only be created by placing a move in the middle
-        if self.move_arr[4] == ' ':
+   
+        if self.move_arr[4] == ' ': #3. Fork: Create an opportunity where you can win in two ways.
             if self.check_fork(self.cpu_move):
                 #cpu fork placed
                 return
+        
+        if self.move_arr[4] == ' ': #4. Block Opponent's Fork:
+            if self.check_fork(self.player_move):
+                return
 
-        #4. Block Opponent's Fork:
-        #4.1.  Create two in a row to force the opponent into defending, as long as it doesn't result in them creating a fork or winning. 
-        # For example, if "X" has a corner, "O" has the center, and "X" has the opposite corner as well, "O" must not play a corner in order to win. 
-        # (Playing a corner in this scenario creates a fork for "X" to win.)
-        #4.2. If there is a configuration where the opponent can fork, block that fork.
-
-        #5. Center: Play the center.
-        if self.move_arr[4] == ' ':
+        if self.move_arr[4] == ' ': #5. Center: Play the center.
             self.move_arr[4] = self.cpu_move
             return
 
@@ -172,26 +159,22 @@ class tic_tac_toe:
             except ValueError:
                 print("Please enter a number within [1-9].")
 
-    def game_handler(self):
-        cpu_turn = True
-        if self.cpu_move == 'O':
-            cpu_turn = False
-        
+    def game_handler(self,cpu_turn):    
         while ' ' in self.move_arr:
             if cpu_turn:
                 self.get_cpu_move()
                 print("CPU Move: ")
-                self.print_board(self.move_arr)
+                self.print_board()
                 cpu_turn = False
             else:
                 self.get_user_move()
                 print("Your Move: ")
-                self.print_board(self.move_arr)
+                self.print_board()
                 cpu_turn = True
         print("Tie game! Better luck next time!")
-        self.print_board(self.move_arr)
+        self.print_board()
         exit()
-
+        
 def main():
     game = tic_tac_toe()
 
